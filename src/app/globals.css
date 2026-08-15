@@ -1,0 +1,10 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* The whole app uses Tailwind classes, so this file stays almost empty.
+   Only truly global things belong here. */
+
+body {
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+}
