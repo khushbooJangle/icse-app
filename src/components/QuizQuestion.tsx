@@ -1,6 +1,9 @@
 "use client";
 
-import type { QuizQuestion as QuizQuestionType } from "@/data/quizzes";
+// Takes McqQuestion, not the whole QuizQuestion union — this component only
+// ever renders multiple-choice. Short answers go to ShortAnswer.tsx and
+// programs to CodeAnswer.tsx.
+import type { McqQuestion } from "@/lib/content";
 
 // This component holds NO state of its own. The quiz session page owns
 // "which option was picked" and passes it down, because the session page is
@@ -10,7 +13,7 @@ export default function QuizQuestion({
   pickedIndex,
   onPick,
 }: {
-  question: QuizQuestionType;
+  question: McqQuestion;
   pickedIndex: number | null; // null = not answered yet
   onPick: (index: number) => void;
 }) {

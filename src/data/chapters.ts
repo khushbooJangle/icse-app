@@ -19,6 +19,9 @@ export type Section = {
   bullets?: string[];
   code?: string;
   isAnalogy?: boolean;
+  visualId?: string; // optional - matches a key in src/components/visuals' registry.
+  // Unknown/missing id renders nothing (see Section 10.1 of APP_PLAN.md). Only add an id
+  // once the matching component actually exists in the registry.
 };
 
 export type Chapter = {
@@ -47,6 +50,7 @@ export const CHAPTERS: Chapter[] = [
         content:
           "A class is a cookie cutter. An object is the actual cookie. You can use one cookie cutter (class) to stamp out hundreds of cookies (objects) - they're all the same shape (same properties and abilities), but each one can have its own toppings (its own data, like a different name or different marks).",
         isAnalogy: true,
+        visualId: "oop-cookie-cutter",
       },
       {
         heading: "The 4 Pillars of OOP",
@@ -100,6 +104,7 @@ export const CHAPTERS: Chapter[] = [
         content:
           "Bytecode is like a universal instruction sheet translated into a neutral language that any country's local translator can read aloud in their own tongue. You (the programmer) write the instructions once in Java. The compiler translates it into this universal 'bytecode' language. Then, no matter which device (country) runs it, that device's own JVM (local translator) reads the bytecode and carries out the instructions in a way that device understands. This is why Java is called 'Write Once, Run Anywhere'.",
         isAnalogy: true,
+        visualId: "java-intro-bytecode",
       },
       {
         heading: "Compiler vs Interpreter",
@@ -116,6 +121,14 @@ export const CHAPTERS: Chapter[] = [
           "BlueJ is a simple, beginner-friendly IDE (a program used to write and run other programs) designed for learning Java. Unlike more complex IDEs, BlueJ lets you visually create objects from a class and directly call their methods by clicking, without always needing to write a full 'main' method yourself - which makes it great for understanding how objects and classes actually work.",
       },
       {
+        heading: "Ways a Java Program Can Run",
+        bullets: [
+          "Stand-alone application - a regular program that runs directly on a computer (this is what you'll write all year)",
+          "Applet - a small Java program that used to run inside a web browser",
+          "Servlet - a Java program that runs on a web server, responding to requests from browsers",
+        ],
+      },
+      {
         heading: "Basic Elements of Java Programs",
         bullets: [
           "Keywords - reserved words with special meaning (e.g. class, int, if, void) - cannot be used as variable names",
@@ -123,6 +136,7 @@ export const CHAPTERS: Chapter[] = [
           "Comments - notes for humans that Java ignores: // for a single line, /* ... */ for multiple lines",
           "Every statement in Java ends with a semicolon (;)",
           "Curly braces { } group together a block of code, like the body of a class or method",
+          "An exception is an unexpected event that disrupts a program while it's running (e.g. dividing by zero). Java handles these using 'try' and 'catch' blocks - you won't need to write these yet, but know the term if it comes up.",
         ],
       },
       {
@@ -259,6 +273,7 @@ System.out.println("d" + "*" + "a"); // d*a - all three are Strings, so this is 
         content:
           "Implicit conversion is like pouring a small cup of water into a bigger jug - it just fits, automatically, with nothing lost. This happens when converting a SMALLER type into a LARGER one (like int into double). Explicit conversion is like pouring a big jug of water into a small cup - you have to do it carefully and on purpose, and some water might overflow and be lost. This happens when converting a LARGER type into a SMALLER one (like double into int), and you must manually typecast it.",
         isAnalogy: true,
+        visualId: "data-types-cup-jug",
       },
       {
         heading: "Key Points to Remember",
@@ -331,6 +346,7 @@ System.out.println("Line1\\nLine2");           // prints on two separate lines`,
         content:
           "A full if-else block is like reading a whole paragraph of instructions to make a simple decision. The ternary operator is like a road sign with just two arrows and one quick question printed on it - same decision, condensed into one glance instead of a paragraph.",
         isAnalogy: true,
+        visualId: "operators-ternary-signpost",
       },
       {
         heading: "Quick Java Example",
@@ -431,6 +447,7 @@ x0 = x0 / x1;   // dividing by the NEW x1 (4) recovers the OLD x1 -> x0 becomes 
         content:
           "Think of a class as a car company's design blueprint for a model - say, the 'Tata Nexon' blueprint. Every actual Nexon built from that blueprint (every object) has the same features (four wheels, an engine, headlights), but each one can be a different colour or have a different registration number. The blueprint itself never drives on the road - only the actual cars do.",
         isAnalogy: true,
+        visualId: "classes-blueprint-car",
       },
       {
         heading: "Key Points to Remember",
@@ -533,6 +550,7 @@ x0 = x0 / x1;   // dividing by the NEW x1 (4) recovers the OLD x1 -> x0 becomes 
         content:
           "A method is like a recipe in a cookbook. The recipe (method body) lists all the steps to make a dish. You don't rewrite the recipe every time you want to cook - you just say 'let's make recipe #5' (call the method) and follow the steps that are already written down.",
         isAnalogy: true,
+        visualId: "methods-recipe-card",
       },
       {
         heading: "Types of Methods",
@@ -653,6 +671,7 @@ x0 = x0 / x1;   // dividing by the NEW x1 (4) recovers the OLD x1 -> x0 becomes 
         content:
           "Scanner is like a waiter taking your order at a restaurant. You tell the waiter what you want (type something on the keyboard), and the waiter 'listens' and brings back exactly what was asked for, in the right format - nextInt() is like asking for 'just the table number' (a whole number), while nextLine() is like asking for 'the whole sentence you'd like to say' (a full line of text).",
         isAnalogy: true,
+        visualId: "java-input-waiter",
       },
       {
         heading: "Common Scanner Methods",
@@ -722,6 +741,7 @@ public class Main {
         content:
           "A constructor is like a hotel room being prepared the instant a guest checks in - the bed is made, towels are placed, lights are switched on - all automatically, without the guest having to ask. In the same way, a constructor automatically sets up an object's data the moment it is created, without you having to call it separately.",
         isAnalogy: true,
+        visualId: "constructors-hotel-room",
       },
       {
         heading: "Types of Constructors",
@@ -804,6 +824,7 @@ public class Main {
         content:
           "A wrapper class is like a gift box around a simple item. The int value 5 by itself is just a plain number, but Integer wraps it in a 'box' (an object) so it can be used in places that need an object, like collections. You can always unwrap the box to get the plain value back.",
         isAnalogy: true,
+        visualId: "library-classes-gift-box",
       },
       {
         heading: "Autoboxing and Unboxing",
@@ -924,6 +945,7 @@ System.out.println(Character.isDigit('7'));  // true`,
         content:
           "A String is like writing with permanent ink on paper - once written, you can't erase it; to 'change' it, you throw the page away and write a fresh one. A StringBuffer is like writing with a pencil and eraser - you can directly edit, insert, or erase parts of the same page without starting over.",
         isAnalogy: true,
+        visualId: "string-handling-ink-pencil",
       },
       {
         heading: "StringBuffer - Common Methods",
@@ -991,6 +1013,7 @@ System.out.println(sb);`,
         content:
           "Think of a GPS navigation app at a fork in the road. It checks a condition (is there traffic on route A?) and decides which path to take. If yes, it re-routes you through path B. Your code does the exact same thing with 'if' and 'else' - check a condition, then choose a path.",
         isAnalogy: true,
+        visualId: "conditionals-gps-fork",
       },
       {
         heading: "Key Forms to Know",
@@ -1060,6 +1083,7 @@ switch (day) {
         content:
           "A loop is like a daily alarm clock set for 7 AM. You don't set a new alarm every single day - you set the repeating condition once ('every day at 7 AM') and it keeps happening automatically until you turn it off. That's exactly how a loop's condition works.",
         isAnalogy: true,
+        visualId: "loops-alarm-clock",
       },
       {
         heading: "The Three Loop Types",
@@ -1134,6 +1158,7 @@ for (int i = 1; i <= 5; i++) {
         content:
           "An array is like a row of school lockers in a corridor. Each locker has a number (called an 'index'), and numbering always starts from 0, not 1. So the first locker is locker[0], the second is locker[1], and so on. You can open any locker directly if you know its number.",
         isAnalogy: true,
+        visualId: "arrays-lockers",
       },
       {
         heading: "Key Points to Remember",
@@ -1208,6 +1233,7 @@ if (!found) {
         content:
           "A 2D array is like a classroom seating plan. To find a specific student, you need TWO pieces of information: which row they're in, and which column (seat number) in that row. In code, this is arr[row][column] - both numbers together pinpoint exactly one seat.",
         isAnalogy: true,
+        visualId: "arrays-2d-seating-grid",
       },
       {
         heading: "Key Points to Remember",
@@ -1273,6 +1299,7 @@ System.out.println("Diagonal Sum: " + diagonalSum);`,
         content:
           "A capsule medicine hides its actual contents (the powder/liquid medicine) inside a protective outer shell. You interact with the capsule as a whole, not the raw ingredients directly. Similarly, encapsulation hides an object's raw data inside the class, and you interact with it only through safe, controlled methods.",
         isAnalogy: true,
+        visualId: "encapsulation-capsule",
       },
       {
         heading: "What is Data Hiding?",
@@ -1341,6 +1368,7 @@ System.out.println("Diagonal Sum: " + diagonalSum);`,
         content:
           "Think about inheriting features from your parents - maybe you got your father's height or your mother's eye colour. You didn't have to 'build' those features yourself, you inherited them automatically. On top of that, you ALSO have your own unique traits that neither parent has. A subclass works exactly the same way with a parent class.",
         isAnalogy: true,
+        visualId: "inheritance-family-traits",
       },
       {
         heading: "Key Syntax",
@@ -1426,6 +1454,7 @@ class Dog extends Animal {
         content:
           "A stack works like a pile of plates in a kitchen cupboard. You can only add a new plate to the TOP of the pile, and you can only remove the plate from the TOP too. The last plate you placed is the first one you'll pick up again. This is called LIFO - Last In, First Out.",
         isAnalogy: true,
+        visualId: "data-structures-stack-queue",
       },
       {
         heading: "The Big Analogy - Queue",

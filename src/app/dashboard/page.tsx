@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import AuthGuard from "@/components/AuthGuard";
+import InvitePanel from "@/components/InvitePanel";
 import ProgressBar from "@/components/ProgressBar";
 import { useAuth } from "@/context/AuthContext";
 import { PAPERS } from "@/data/papers";
@@ -13,6 +14,7 @@ import {
   getStudyDone,
   PASS_MARK,
 } from "@/lib/progress";
+import { QUIZ_PERCENT_FOOTNOTE } from "@/lib/stats";
 
 const SECTIONS = [
   { href: "/study", emoji: "📚", title: "Study", blurb: "Learn with analogies", colour: "hover:border-blue-400" },
@@ -25,7 +27,7 @@ const SECTIONS = [
 // The real content is a separate component so it can safely assume a user exists.
 export default function DashboardPage() {
   return (
-    <AuthGuard>
+    <AuthGuard allow={["student"]}>
       <DashboardContent />
     </AuthGuard>
   );
@@ -44,9 +46,17 @@ function DashboardContent() {
 
   useEffect(() => {
     if (!user) return;
-    setStudyDone(getStudyDone(user.username));
-    setQuizScores(getQuizScores(user.username));
-    setPapersDone(getPapersDone(user.username));
+    // Promise.all fires all three queries at once rather than waiting for each
+    // in turn — three round trips in the time of the slowest, not the sum.
+    Promise.all([
+      getStudyDone(user.username),
+      getQuizScores(user.username),
+      getPapersDone(user.username),
+    ]).then(([study, scores, papers]) => {
+      setStudyDone(study);
+      setQuizScores(scores);
+      setPapersDone(papers);
+    });
   }, [user]);
 
   // Bonus chapters are excluded from both counts — see lib/content.ts for why.
@@ -81,6 +91,9 @@ function DashboardContent() {
           total={CORE_TOTAL}
           colour="bg-amber-500"
         />
+        <p className="rounded-lg bg-gray-50 px-3 py-2 text-xs text-gray-500">
+          ℹ️ {QUIZ_PERCENT_FOOTNOTE}
+        </p>
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2">
@@ -99,6 +112,18 @@ function DashboardContent() {
           </Link>
         ))}
       </div>
+
+      {/* A student hands their own code to a parent, who then gets a read-only
+          view of this progress (APP_PLAN 11.3). */}
+      {user && (
+        <div className="mt-8">
+          <InvitePanel
+            kind="parent"
+            code={user.parentInviteCode}
+            ownerId={user.id}
+          />
+        </div>
+      )}
     </>
   );
 }

@@ -14,7 +14,7 @@ const DIFFICULTY_STYLE: Record<string, string> = {
 
 export default function PapersPage() {
   return (
-    <AuthGuard>
+    <AuthGuard allow={["student"]}>
       <PapersContent />
     </AuthGuard>
   );
@@ -25,13 +25,15 @@ function PapersContent() {
   const [done, setDone] = useState<string[]>([]);
 
   useEffect(() => {
-    if (user) setDone(getPapersDone(user.username));
+    if (!user) return;
+    getPapersDone(user.username).then(setDone);
   }, [user]);
 
-  function handleToggle(id: string) {
+  async function handleToggle(id: string) {
     if (!user) return;
-    togglePaperDone(user.username, id);
-    setDone(getPapersDone(user.username)); // re-read so the screen matches storage
+    await togglePaperDone(user.username, id);
+    // Re-read so the checkbox always matches what's actually stored.
+    setDone(await getPapersDone(user.username));
   }
 
   return (

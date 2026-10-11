@@ -3,7 +3,10 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
+import AskDoubtButton from "@/components/AskDoubtButton";
 import AuthGuard from "@/components/AuthGuard";
+import CodeBlock from "@/components/CodeBlock";
+import VisualSlot from "@/components/visuals/VisualSlot";
 import { useAuth } from "@/context/AuthContext";
 import { getChapter, getChapterNumber } from "@/lib/content";
 import { getStudyDone, markStudyDone } from "@/lib/progress";
@@ -12,7 +15,7 @@ import { getStudyDone, markStudyDone } from "@/lib/progress";
 // useParams() gives you whatever was in that slot: { slug: "loops" }.
 export default function ChapterPage() {
   return (
-    <AuthGuard>
+    <AuthGuard allow={["student"]}>
       <ChapterContent />
     </AuthGuard>
   );
@@ -27,7 +30,8 @@ function ChapterContent() {
   const [isDone, setIsDone] = useState(false);
 
   useEffect(() => {
-    if (user) setIsDone(getStudyDone(user.username).includes(slug));
+    if (!user) return;
+    getStudyDone(user.username).then((done) => setIsDone(done.includes(slug)));
   }, [user, slug]);
 
   // Someone typed a url that doesn't match any chapter.
@@ -42,10 +46,12 @@ function ChapterContent() {
     );
   }
 
-  function handleMarkDone() {
+  async function handleMarkDone() {
     if (!user) return;
-    markStudyDone(user.username, slug);
-    setIsDone(true); // update the screen straight away, don't re-read localStorage
+    // Show it as done immediately rather than waiting for the round trip —
+    // the write is reliable and the alternative is a visibly laggy button.
+    setIsDone(true);
+    await markStudyDone(user.username, slug);
   }
 
   return (
@@ -78,6 +84,10 @@ function ChapterContent() {
               {section.heading}
             </h2>
 
+            {/* Infographic for this section, if one has been built.
+                Unknown/missing ids render nothing — never breaks the page. */}
+            <VisualSlot visualId={section.visualId} />
+
             {section.content && (
               <p className="leading-relaxed text-gray-700">{section.content}</p>
             )}
@@ -93,13 +103,9 @@ function ChapterContent() {
               </ul>
             )}
 
-            {/* Plain <pre><code> on purpose — no syntax highlighting library.
-                whitespace-pre-wrap keeps the indentation and wraps long lines. */}
-            {section.code && (
-              <pre className="overflow-x-auto rounded-xl bg-gray-900 p-4 text-sm text-gray-100">
-                <code className="whitespace-pre-wrap font-mono">{section.code}</code>
-              </pre>
-            )}
+            {/* Read-only syntax-highlighted editor (APP_PLAN 10.2) —
+                closer to what BlueJ looks like than a plain <pre>. */}
+            {section.code && <CodeBlock code={section.code} />}
           </section>
         ))}
       </div>
@@ -118,6 +124,9 @@ function ChapterContent() {
           </button>
         )}
       </div>
+
+      {/* Pre-tagged with the chapter being read, so the student never picks it. */}
+      <AskDoubtButton chapterSlug={slug} chapterTitle={chapter.title} />
     </>
   );
 }

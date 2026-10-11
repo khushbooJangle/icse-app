@@ -5,12 +5,17 @@ import { useRouter } from "next/navigation";
 import AuthGuard from "@/components/AuthGuard";
 import { useAuth } from "@/context/AuthContext";
 import { CHAPTERS } from "@/data/chapters";
-import { CORE_TOTAL, countQuestionsFor, isCoreChapter } from "@/lib/content";
+import {
+  CORE_TOTAL,
+  countQuestionsByType,
+  countQuestionsFor,
+  isCoreChapter,
+} from "@/lib/content";
 import { getQuizScores, PASS_MARK } from "@/lib/progress";
 
 export default function QuizHomePage() {
   return (
-    <AuthGuard>
+    <AuthGuard allow={["student"]}>
       <QuizHomeContent />
     </AuthGuard>
   );
@@ -24,7 +29,8 @@ function QuizHomeContent() {
   const [selected, setSelected] = useState<string[]>([]); // for mixed mode
 
   useEffect(() => {
-    if (user) setScores(getQuizScores(user.username));
+    if (!user) return;
+    getQuizScores(user.username).then(setScores);
   }, [user]);
 
   function toggleSelected(slug: string) {
@@ -84,6 +90,10 @@ function QuizHomeContent() {
                 </span>
                 <span className="text-xs text-gray-400">
                   {countQuestionsFor(chapter.slug)} questions
+                  {countQuestionsByType(chapter.slug).short > 0 &&
+                    ` · ${countQuestionsByType(chapter.slug).short} written ✍️`}
+                  {countQuestionsByType(chapter.slug).code > 0 &&
+                    ` · ${countQuestionsByType(chapter.slug).code} to code 💻`}
                 </span>
               </span>
 

@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
+import AskDoubtButton from "@/components/AskDoubtButton";
 import AuthGuard from "@/components/AuthGuard";
 import Flashcard from "@/components/Flashcard";
 import { useAuth } from "@/context/AuthContext";
@@ -10,7 +11,7 @@ import { getStudyDone } from "@/lib/progress";
 
 export default function RevisionPage() {
   return (
-    <AuthGuard>
+    <AuthGuard allow={["student"]}>
       <RevisionContent />
     </AuthGuard>
   );
@@ -24,7 +25,8 @@ function RevisionContent() {
 
   // Only revise chapters already marked done in Study.
   useEffect(() => {
-    if (user) setSlugs(getStudyDone(user.username));
+    if (!user) return;
+    getStudyDone(user.username).then(setSlugs);
   }, [user]);
 
   // useCallback so these keep the same identity between renders — the keyboard
@@ -136,6 +138,10 @@ function RevisionContent() {
           </button>
         )}
       </div>
+
+      {/* Tagged with whichever card is on screen right now, so a doubt raised
+          mid-revision lands on the right chapter. */}
+      <AskDoubtButton chapterSlug={slug} chapterTitle={title} />
     </div>
   );
 }

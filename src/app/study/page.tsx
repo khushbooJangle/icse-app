@@ -9,7 +9,7 @@ import { getStudyDone } from "@/lib/progress";
 
 export default function StudyPage() {
   return (
-    <AuthGuard>
+    <AuthGuard allow={["student"]}>
       <StudyContent />
     </AuthGuard>
   );
@@ -20,7 +20,10 @@ function StudyContent() {
   const [done, setDone] = useState<string[]>([]);
 
   useEffect(() => {
-    if (user) setDone(getStudyDone(user.username));
+    // Reading progress is a network call now, so it can't happen inline —
+    // declare an async function inside the effect and call it.
+    if (!user) return;
+    getStudyDone(user.username).then(setDone);
   }, [user]);
 
   return (
